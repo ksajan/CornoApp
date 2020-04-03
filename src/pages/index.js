@@ -23,7 +23,18 @@ const IndexPage = () => {
    */
 
   async function mapEffect({ leafletElement: map } = {}) {
+
+    let response;
+
+    try {
+      response = await axios.get("https://corona.lmao.ninja/countries");
+    } catch (e) {
+      console.log(`failed to get response: ${e.message}`, e);
+      return;
     }
+
+    const { data = [] } = response;
+  }
 
   const mapSettings = {
     center: CENTER,
