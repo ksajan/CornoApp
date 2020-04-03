@@ -1,10 +1,11 @@
 import React from 'react';
 import Helmet from 'react-helmet';
 import L from 'leaflet';
+import axios from 'axios';
+
 import Layout from 'components/Layout';
 import Container from 'components/Container';
 import Map from 'components/Map';
-import axios from 'axios';
 
 const LOCATION = {
   lat: 0,
@@ -12,7 +13,6 @@ const LOCATION = {
 };
 const CENTER = [LOCATION.lat, LOCATION.lng];
 const DEFAULT_ZOOM = 2;
-
 
 const IndexPage = () => {
 
@@ -23,42 +23,39 @@ const IndexPage = () => {
    */
 
   async function mapEffect({ leafletElement: map } = {}) {
-
     let response;
 
     try {
-      response = await axios.get("https://corona.lmao.ninja/countries");
-    } catch (e) {
-      console.log(`failed to get response: ${e.message}`, e);
+      response = await axios.get('https://corona.lmao.ninja/countries');
+    } catch(e) {
+      console.log(`Failed to fetch countries: ${e.message}`, e);
       return;
     }
 
     const { data = [] } = response;
-
     const hasData = Array.isArray(data) && data.length > 0;
 
-    if (!hasData) return;
+    if ( !hasData ) return;
 
-    const geoGjson = {
-      type: "FeatureCollection",
+    const geoJson = {
+      type: 'FeatureCollection',
       features: data.map((country = {}) => {
-      const { countryInfo = {}} = country;
-      const { lat, long, lng } = countryInfo;
-      return {
-        type: "Feature",
-        properties: {
-          ...country,
-        },
-        geometry: {
-          type: "Point",
-          coordinates: [lng, lat]
+        const { countryInfo = {} } = country;
+        const { lat, long: lng } = countryInfo;
+        return {
+          type: 'Feature',
+          properties: {
+            ...country,
+          },
+          geometry: {
+            type: 'Point',
+            coordinates: [ lng, lat ]
+          }
         }
-      }
-    })
+      })
     }
 
-
-  const geoJsonLayers = new L.GeoJSON(geoJson, {
+    const geoJsonLayers = new L.GeoJSON(geoJson, {
       pointToLayer: (feature = {}, latlng) => {
         const { properties = {} } = feature;
         let updatedFormatted;
@@ -123,14 +120,13 @@ const IndexPage = () => {
         <title>Home Page</title>
       </Helmet>
 
-      <Map {...mapSettings}/>
+      <Map {...mapSettings} />
 
       <Container type="content" className="text-center home-start">
-        <h2>Geting Started with Gatsby!</h2>
-        <p>Visit the following link to use the above code to get started with Gatsby!</p>
+        <h2>Still Getting Started?</h2>
+        <p>Run the following in your terminal!</p>
         <pre>
           <code>gatsby new [directory] https://github.com/colbyfayock/gatsby-starter-leaflet</code>
-          <code>git clone https://github.com/ksajan/CornoApp</code>
         </pre>
         <p className="note">Note: Gatsby CLI required globally for the above command</p>
       </Container>
