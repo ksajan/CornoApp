@@ -45,12 +45,8 @@ const IndexPage = () => {
    * @example Here this is and example of being used to zoom in and set a popup on load
    */
 
-  async function mapEffect({ leafletElement } = {}) {
-    if ( !leafletElement ) return;
-
-    const popup = L.popup({
-      maxWidth: 800
-    });
+  async function mapEffect({ leafletElement: map } = {}) {
+    }
 
     const location = await getCurrentLocation().catch(() => LOCATION );
 
@@ -88,7 +84,6 @@ const IndexPage = () => {
       </Helmet>
 
       <Map {...mapSettings}>
-        <Marker ref={markerRef} position={CENTER} />
       </Map>
 
       <Container type="content" className="text-center home-start">
